@@ -31,7 +31,7 @@ O projeto está em constante desenvolvimento, e estamos empenhados em implementa
 
 ## Versão Atual
 
-A versão atual do projeto é a **1.0.0**.
+A versão atual do projeto é a **2.4.0**.
 
 ## Autores
 
