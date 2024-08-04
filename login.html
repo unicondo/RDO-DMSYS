@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <!-- Meta tags gerais -->
+  <meta charset="UTF-8">
+  <meta name="author" content="Bruno Ferreira Alves">
+  <meta name="DC.rights" content="https://allvz.com.br/">
+  <meta name="copyright" content="© 2024 Bruno Ferreira Alves">
+  <meta name="description" content="Gerador para automação de Relatório Diário de Operação.">
+
+  <!-- Configurações específicas para web app -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="RDO - DMSYS">
+
+  <title>Login - RDO - DMSYS - Em desenvolvimento</title>
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Login - RDO - DMSYS">
+  <meta property="og:description" content="Gerador para automação de Relatório Diário de Operação. Em desenvolvimento por UniCondo.">
+  <meta property="og:image" content="https://res.cloudinary.com/djldhndm4/image/upload/v1722113074/thumbdmsysrdodev_gflytp.jpg">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dmsys.com.br/">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RDO - DMSYS">
+  <meta name="twitter:description" content="Gerador para automação de Relatório Diário de Operação. Em desenvolvimento por UniCondo.">
+  <meta name="twitter:image" content="https://res.cloudinary.com/djldhndm4/image/upload/v1722113074/thumbdmsysrdodev_gflytp.jpg">
+
+  <!-- Ícones e imagens para tela inicial -->
+  <link rel="apple-touch-startup-image" href="./assets/images/startup_320x480.png">
+  <link rel="apple-touch-startup-image" href="/assets/images/startup_640x940.png" media="screen and (-webkit-min-device-pixel-ratio: 2)">
+  <link rel="apple-touch-startup-image" sizes="748x1024" href="./assets/images/startup_748x1024.png">
+  <link rel="apple-touch-startup-image" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)" href="./assets/images/startup_768x1004.png">
+  <link rel="apple-touch-startup-image" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)" href="./assets/images/startup_320x460.png">
+  <link rel="apple-touch-icon-precomposed" href="./assets/images/logo_webapp_128.png">
+  <link rel="apple-touch-icon" href="./assets/images/logo_webapp.png">
+  <link rel="icon" href="./assets/images/logo_webapp.png">
+  <link rel="shortcut icon" href="./assets/images/favicon.ico">
+
+  <!--  Fontes -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+
+  <!-- Link para a biblioteca Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="./assets/css/soft-ui-dashboard.css?v=1.0.7" rel="stylesheet" />
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .bg-video {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      min-width: 100%; 
+      min-height: 100%;
+      z-index: -1;
+    }
+
+    .blur-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.68);
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(10.5px);
+      -webkit-backdrop-filter: blur(10.5px);
+      border-radius: 13px !important;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      z-index: 1;
+    }
+    label, .form-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #f5f9ff;
+    margin-left: 0.25rem;
+}
+.mb-0 {
+    margin-bottom: 0 !important;
+    color: #fff;
+}
+.mb-4 {
+    margin-bottom: 1.5rem !important;
+    color: #d4c3c3;
+}
+.blur {
+    -webkit-backdrop-filter: saturate(200%) blur(30px)!important;
+    background: rgb(0 0 0 / 68%)!important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37)!important;
+    backdrop-filter: blur(10.5px)!important;
+    -webkit-backdrop-filter: blur(10.5px)!important;
+    border-radius: 13px !important;
+    border: 1px solid rgba(255, 255, 255, 0.18)!important;
+}
+.navbar .navbar-brand {
+    color: #d3d5d8;
+}
+
+.navbar-nav .show>.nav-link, .navbar-nav .nav-link.active {
+    color: rgb(255 255 255 / 90%);
+}
+
+.navbar .nav-link {
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    font-weight: 400;
+    font-size: 0.875rem;
+}
+.form-control {
+    display: block!important;
+    width: 100%!important;
+    height: calc(1.5em + .75rem + 2px)!important;
+    padding: .375rem .75rem!important;
+    font-size: 1rem!important;
+    font-weight: 400!important;
+    line-height: 1.5!important;
+    color: #fff !important;
+    background-color: #00000045!important;
+    background-clip: padding-box!important;
+    border: 1px solid #ced4da!important;
+    border-radius: 2rem!important;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out!important;
+}
+  </style>
+</head>
+
+<body class="">
+  <video autoplay muted loop class="bg-video">
+    <source src="https://res.cloudinary.com/djldhndm4/video/upload/v1722092852/Video-Dmsys-site-com-alteracoes_edvp2s.mp4" type="video/mp4">
+  </video>
+  <div class="blur-overlay"></div>
+  <div class="container position-sticky z-index-sticky top-0">
+    <div class="row">
+      <div class="col-12">
+        <!-- Navbar -->
+       <nav class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+          <div class="container-fluid pe-0">
+            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="https://dmsys.com.br/">
+              <img class="mr-3" src="./dmsys-logo-svg.svg" alt="" width="150">
+            </a><div class="lh-100">
+              <h6 class="mb-0 text-white lh-100">Relatório Diário de Operação</h6>
+              <small>V2.9 | Desde JUL/2024</small>
+          </div>
+            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon mt-2">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </span>
+            </button>
+           
+          </div> 
+        </nav>
+        <!-- End Navbar -->
+      </div>
+    </div>
+  </div>
+  <main class="main-content  mt-0">
+    <section>
+      <div class="page-header min-vh-75">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+              <div class="card card-plain mt-8">
+                <div class="card-header pb-0 text-left bg-transparent">
+                  <h3 class="font-weight-bolder text-info text-gradient">Bem-vindo (a) de volta</h3>
+                  <p class="mb-0">Digite seu e-mail e senha para entrar</p>
+                </div>
+                <div class="card-body">
+                  <form role="form">
+                    <label>E-mail</label>
+                    <div class="mb-3">
+                      <input type="email" class="form-control" placeholder="E-mail" aria-label="Email" aria-describedby="email-addon">
+                    </div>
+                    <label>Senha</label>
+                    <div class="mb-3">
+                      <input type="email" class="form-control" placeholder="Senha" aria-label="Password" aria-describedby="password-addon">
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
+                      <label class="form-check-label" for="rememberMe">Lembrar-me</label>
+                    </div>
+                    <div class="text-center">
+                      <a href="index.html"><button type="button" class="btn bg-gradient-info w-100 mt-4 mb-0">Entrar</button></a>
+                    </div>
+                  </form>
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                  <p class="mb-4 text-sm mx-auto">
+                    Não tem uma conta?
+                    <a href="javascript:;" class="text-info text-gradient font-weight-bold">Cadastre-se</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('./assets/images/curved-images/curved6.jpg')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!--   Core JS Files   -->
+  <script src="./assets/js/core/popper.min.js"></script>
+  <script src="./assets/js/core/bootstrap.min.js"></script>
+  <script src="./assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="./assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <!-- Kanban scripts -->
+  <script src="./assets/js/plugins/dragula/dragula.min.js"></script>
+  <script src="./assets/js/plugins/jkanban/jkanban.js"></script>
+  <script src="./assets/js/plugins/chartjs.min.js"></script>
+  <script src="./assets/js/plugins/threejs.js"></script>
+  <script src="./assets/js/plugins/orbit-controls.js"></script>
+  <script>
+    var ctx = document.getElementById("chart-bars").getContext("2d");
+
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["M", "T", "W", "T", "F", "S", "S"],
+        datasets: [{
+          label: "Sales",
+          tension: 0.4,
+          borderWidth: 0,
+          borderRadius: 4,
+          borderSkipped: false,
+          backgroundColor: "rgba(255, 255, 255, .8)",
+          data: [50, 20, 10, 22, 50, 10, 40],
+          maxBarThickness: 6
+        }, ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+        scales: {
+          y: {
+            grid: {
+              drawBorder: false,
+              display: false,
+              drawOnChartArea: false,
+              drawTicks: false,
+            },
+            ticks: {
+              suggestedMin: 0,
+              suggestedMax: 500,
+              beginAtZero: true,
+              padding: 15,
+              font: {
+                size: 14,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+              },
+              color: "#fff"
+            },
+          },
+          x: {
+            grid: {
+              drawBorder: false,
+              display: false,
+              drawOnChartArea: false,
+              drawTicks: false
+            },
+            ticks: {
+              display: false
+            },
+          },
+        },
+      },
+    });
+
+
+    var ctx2 = document.getElementById("chart-line").getContext("2d");
+
+    var gradientStroke1 = ctx2.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke1.addColorStop(1, 'rgba(203,12,159,0.2)');
+    gradientStroke1.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+    gradientStroke1.addColorStop(0, 'rgba(203,12,159,0)'); //purple colors
+
+    var gradientStroke2 = ctx2.createLinearGradient(0, 230, 0, 50);
+
+    gradientStroke2.addColorStop(1, 'rgba(20,23,39,0.2)');
+    gradientStroke2.addColorStop(0.2, 'rgba(72,72,176,0.0)');
+    gradientStroke2.addColorStop(0, 'rgba(20,23,39,0)'); //purple colors
+
+    new Chart(ctx2, {
+      type: "line",
+      data: {
+        labels: ['April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        datasets: [{
+          label: "Mobile apps",
+          tension: 0.4,
+          borderWidth: 0,
+          pointRadius: 0,
+          borderColor: "#cb0c9f",
+          borderWidth: 3,
+          backgroundColor: gradientStroke1,
+          fill: true,
+          data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
+          maxBarThickness: 6
+
+        },
+        {
+          label: "Websites",
+          tension: 0.4,
+          borderWidth: 0,
+          pointRadius: 0,
+          borderColor: "#3A416F",
+          borderWidth: 3,
+          backgroundColor: gradientStroke2,
+          fill: true,
+          data: [30, 30, 300, 450, 200, 100, 400, 230, 500],
+          maxBarThickness: 6
+        },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          }
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index',
+        },
+        scales: {
+          y: {
+            grid: {
+              drawBorder: false,
+              display: true,
+              drawOnChartArea: true,
+              drawTicks: false,
+              borderDash: [5, 5]
+            },
+            ticks: {
+              display: true,
+              padding: 10,
+              color: '#b2b9bf',
+              font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+              },
+            }
+          },
+          x: {
+            grid: {
+              drawBorder: false,
+              display: false,
+              drawOnChartArea: false,
+              drawTicks: false,
+              borderDash: [5, 5]
+            },
+            ticks: {
+              display: true,
+              color: '#b2b9bf',
+              padding: 20,
+              font: {
+                size: 11,
+                family: "Open Sans",
+                style: 'normal',
+                lineHeight: 2
+              },
+            }
+          },
+        },
+      },
+    });
+
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="./assets/js/soft-ui-dashboard.min.js?v=1.0.7"></script>
+</body>
+
+</html>
