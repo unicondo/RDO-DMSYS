@@ -137,6 +137,25 @@
     transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out!important;
 }
   </style>
+  <script>
+    function ajustarSaudacao() {
+      var data = new Date();
+      var horas = data.getHours();
+      var saudacao = "Bem-vindo (a) de volta";
+      if (horas < 12) {
+        saudacao = "Bom dia, bem-vindo(a) de volta!";
+      } else if (horas < 18) {
+        saudacao = "Boa tarde, bem-vindo(a) de volta!";
+      } else {
+        saudacao = "Boa noite, bem-vindo(a) de volta!";
+      }
+      document.getElementById('saudacao').innerText = saudacao;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      ajustarSaudacao();
+    });
+  </script>
 </head>
 
 <body class="">
@@ -154,7 +173,7 @@
               <img class="mr-3" src="./dmsys-logo-svg.svg" alt="" width="150">
             </a><div class="lh-100">
               <h6 class="mb-0 text-white lh-100">Relatório Diário de Operação</h6>
-              <small>V2.9 | Desde JUL/2024</small>
+              <small>V3.0 | Desde JUL/2024</small>
           </div>
             <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon mt-2">
@@ -178,7 +197,7 @@
             <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
               <div class="card card-plain mt-8">
                 <div class="card-header pb-0 text-left bg-transparent">
-                  <h3 class="font-weight-bolder text-info text-gradient">Bem-vindo (a) de volta</h3>
+                  <h3 class="font-weight-bolder text-info text-gradient" id="saudacao"></h3>
                   <p class="mb-0">Digite seu e-mail e senha para entrar</p>
                 </div>
                 <div class="card-body">
@@ -196,7 +215,7 @@
                       <label class="form-check-label" for="rememberMe">Lembrar-me</label>
                     </div>
                     <div class="text-center">
-                      <a href="index.html"><button type="button" class="btn bg-gradient-info w-100 mt-4 mb-0">Entrar</button></a>
+                      <a href="rdo.html"><button type="button" class="btn bg-gradient-info w-100 mt-4 mb-0">Entrar</button></a>
                     </div>
                   </form>
                 </div>
@@ -210,7 +229,7 @@
             </div>
             <div class="col-md-6">
               <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
-                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('./assets/images/curved-images/curved6.jpg')"></div>
+                <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('https://res.cloudinary.com/djldhndm4/image/upload/v1722740172/curved6_jzklzt.jpg')"></div>
               </div>
             </div>
           </div>
