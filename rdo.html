@@ -223,16 +223,9 @@ input[type="time"]::-moz-calendar-picker-indicator {
             <form id="reportForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="operatorName">Operador</label>
-                        <select class="form-control" id="operatorName" required>
-                            <option value="Bruno Alves">Douglas</option>
-                            <option value="Eduardo">Eduardo</option>
-                            <option value="Jorge">Jorge</option>
-                            <option value="Marcelo Capela">Emerson</option>
-                            <option value="Rafael Graça">Rafael Graça</option>
-                            <option value="Sheldon">Sheldon</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label for="operatorName">Operador</label>
+                            <div id="operatorName" class="form-control" required></div>                        
                     <div class="form-group" id="operatorName2Container">
                         <label for="operatorName2">Operador 2</label>
                         <select class="form-control" id="operatorName2">
@@ -337,7 +330,18 @@ input[type="time"]::-moz-calendar-picker-indicator {
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script> $(document).ready(function() {
+    <script> 
+    document.addEventListener('DOMContentLoaded', (event) => {
+    const operatorName = localStorage.getItem('nome'); // Get the nome from local storage
+    console.log(operatorName)
+    if (operatorName) {
+        document.getElementById('operatorName').textContent = operatorName;
+    } else {
+        // Handle case where nome is not available in local storage
+        console.error('Nome not found in local storage');
+    }
+    });
+    $(document).ready(function() {
             const operators = ["Bruno Alves", "Eduardo", "Jorge", "Marcelo Capela", "Rafael Graça", "Sheldon"];
 
             $("#period").change(function() {

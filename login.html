@@ -194,9 +194,13 @@ function Login() {
     .then(data => {
       console.log(data)
         if (data.accessToken) {
+            localStorage.clear();
             // Store the accessToken in local storage
             localStorage.setItem('accessToken', data.accessToken);
-            localStorage.setItem('id', data.user.id);
+            localStorage.setItem('id', data.user.id)
+            localStorage.setItem('nome', data.user.nome);
+            localStorage.setItem('data', data);
+            
 
             // Redirect to rdo.html
             window.location.href = 'rdo.html';
