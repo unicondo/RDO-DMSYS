@@ -439,22 +439,25 @@ input[type="time"]::-moz-calendar-picker-indicator {
                 const policeReports = [];
                 let valid = true;
 
+                console.log(operatorName, period, date, startDate, endDate, mealTimeStart, mealTimeEnd, policeReports);
+
                 if (period === "Noturno" && !startDate) {
                     alert("Por favor, preencha a data de início.");
                     valid = false;
                 }
+
                 if (period === "Noturno" && !endDate) {
                     alert("Por favor, preencha a data de término.");
                     valid = false;
                 }
 
                 $("#policeReportTable tbody tr").each(function() {
-                    const time = $(this).find("input[name='policeReportTime[]']").val();
+                    const time = $(this).find("input[name='policeReportTime[]']").val() + ':00Z';
                     const location = $(this).find("input[name='policeReportLocation[]']").val();
                     const observation = $(this).find("input[name='policeReportObservation[]']").val();
-
+                    
                     if (time && location && observation) {
-                        policeReports.push({ time, location, observation });
+                        policeReports.push({ time: date + 'T' + time, location, observation });
                     } else {
                         alert("Por favor, preencha todos os campos da tabela de POLÍCIA MILITAR.");
                         valid = false;
@@ -465,6 +468,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
                 if (valid) {
                     $("#reportOperatorName").text(operatorName);
                     $("#reportPeriod").text(period);
+
                     if (period === "Noturno") {
                         $("#reportStartDate").show();
                         $("#reportEndDate").show();
@@ -477,17 +481,20 @@ input[type="time"]::-moz-calendar-picker-indicator {
                         $("#reportDayDate").show();
                         $("#reportDate").text(date);
                     }
+
                     $("#reportMealTime").text(`${mealTimeStart} - ${mealTimeEnd}`);
 
                     if (policeReports.length > 0) {
                         $("#noRondaMessage").hide();
                         $("#reportPoliceTable tbody").empty();
                         policeReports.forEach(report => {
-                            $("#reportPoliceTable tbody").append(`<tr>
-                                <td>${report.time}</td>
-                                <td>${report.location}</td>
-                                <td>${report.observation}</td>
-                            </tr>`);
+                            $("#reportPoliceTable tbody").append(`
+                                <tr>
+                                    <td>${report.time}</td>
+                                    <td>${report.location}</td>
+                                    <td>${report.observation}</td>
+                                </tr>
+                            `);
                         });
                     } else {
                         $("#noRondaMessage").show();
@@ -495,9 +502,40 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     }
 
                     $("#report").show();
+
+                    // Create the payload according to backend schema
+                    const data = {
+                        operador: localStorage.getItem('id'),
+                        data_inicio: date + 'T00:00:00Z',
+                        data_fim: endDate ? endDate + 'T00:00:00Z' : date + 'T00:00:00Z',  // Ensure data_fim is not empty
+                        horario_rf: date + 'T' + mealTimeStart + ':00Z',  // Complete datetime format
+                        ocorrencia_desc: '',
+                        ocorrencia_pm_horario: policeReports.length > 0 ? policeReports[0].time : date + 'T00:00:00Z',  // Complete datetime format
+                        ocorrencia_pm_local: policeReports.length > 0 ? policeReports[0].location : '',
+                        ocorrencia_pm_observacao: policeReports.length > 0 ? policeReports[0].observation : '',
+                        ocorrencia_pm_acao: ''
+                    };
+                    // Send data to backend
+                    fetch('http://127.0.0.1:3333/duty', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(responseData => {
+                        console.log('Success:', responseData);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
                 }
             });
-        });</script>
+
+        });
+        
+        </script>
    
 </body>
 </html>

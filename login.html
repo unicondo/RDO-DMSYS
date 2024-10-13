@@ -138,6 +138,79 @@
 }
   </style>
   <script>
+function Login() {
+    // Get the input values
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+
+    // Create the payload
+    var data = {
+        email: email,
+        password: password
+    };
+
+    // Send a POST request
+    fetch('http://127.0.0.1:3333/sessions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+function Login() {
+    // Get the input values
+    var email = document.getElementById('email').value;
+    var password = document.getElementById('password').value;
+
+    // Create the payload
+    var data = {
+        email: email,
+        password: password
+    };
+
+    // Send a POST request
+    fetch('http://127.0.0.1:3333/sessions', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.status === 400) {
+            alert('Email ou senha incorretas');
+            throw new Error('Email or password incorrect');
+        }
+        return response.json();
+    })
+    .then(data => {
+      console.log(data)
+        if (data.accessToken) {
+            // Store the accessToken in local storage
+            localStorage.setItem('accessToken', data.accessToken);
+            localStorage.setItem('id', data.user.id);
+
+            // Redirect to rdo.html
+            window.location.href = 'rdo.html';
+        } else {
+            console.error('Login failed:', data);
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+    }
+
+
+
     function ajustarSaudacao() {
       var data = new Date();
       var horas = data.getHours();
@@ -204,18 +277,18 @@
                   <form role="form">
                     <label>E-mail</label>
                     <div class="mb-3">
-                      <input type="email" class="form-control" placeholder="E-mail" aria-label="Email" aria-describedby="email-addon">
+                      <input type="email" id = "email" class="form-control" placeholder="E-mail" aria-label="Email" aria-describedby="email-addon">
                     </div>
                     <label>Senha</label>
                     <div class="mb-3">
-                      <input type="email" class="form-control" placeholder="Senha" aria-label="Password" aria-describedby="password-addon">
+                      <input type="email" id = "password" class="form-control" placeholder="Senha" aria-label="Password" aria-describedby="password-addon">
                     </div>
                     <div class="form-check form-switch">
                       <input class="form-check-input" type="checkbox" id="rememberMe" checked="">
                       <label class="form-check-label" for="rememberMe">Lembrar-me</label>
                     </div>
                     <div class="text-center">
-                      <a href="rdo.html"><button type="button" class="btn bg-gradient-info w-100 mt-4 mb-0">Entrar</button></a>
+                      <button type="button" onclick="Login()" class="btn bg-gradient-info w-100 mt-4 mb-0">Entrar</button></a>
                     </div>
                   </form>
                 </div>
