@@ -341,8 +341,31 @@ input[type="time"]::-moz-calendar-picker-indicator {
         console.error('Nome not found in local storage');
     }
     });
-    $(document).ready(function() {
-            const operators = ["Bruno Alves", "Eduardo", "Jorge", "Marcelo Capela", "Rafael Graça", "Sheldon"];
+
+    async function fetchOperatorNames() {
+    try {
+        const accessToken = localStorage.getItem('accessToken'); // Assuming the token is stored in localStorage
+
+        const response = await fetch('http://127.0.0.1:3333/users/getnames', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        const data = await response.json();
+        const operators = data.map(user => user.nome); // Extract only the "nome" property
+
+        // Use the "operators" array as needed
+        console.log(operators);
+
+        return operators; // Return the array for further use
+    } catch (error) {
+        console.error('Error fetching operator names:', error);
+        return []; // Return an empty array in case of error
+    }
+    }    
+    $(document).ready(async function() {
+            const operators = await fetchOperatorNames()
 
             $("#period").change(function() {
                 const period = $(this).val();
