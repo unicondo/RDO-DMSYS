@@ -355,8 +355,6 @@ input[type="time"]::-moz-calendar-picker-indicator {
         const data = await response.json();
         const operators = data.map(user => user.nome); // Extract only the "nome" property
 
-        // Use the "operators" array as needed
-        console.log(operators);
 
         return operators; // Return the array for further use
     } catch (error) {
