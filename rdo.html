@@ -344,7 +344,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
 
     async function fetchOperatorNames() {
     try {
-        const accessToken = localStorage.getItem('accessToken'); // Assuming the token is stored in localStorage
+        const accessToken = localStorage.getItem('accessToken');
 
         const response = await fetch('http://127.0.0.1:3333/users/getnames', {
             headers: {
@@ -353,15 +353,36 @@ input[type="time"]::-moz-calendar-picker-indicator {
         });
 
         const data = await response.json();
-        const operators = data.map(user => user.nome); // Extract only the "nome" property
+        const operators = data.map(user => user.nome); // Extraia apenas a propriedade "nome"
 
 
-        return operators; // Return the array for further use
+        return operators; // Retorne a array para mais usos
     } catch (error) {
         console.error('Error fetching operator names:', error);
-        return []; // Return an empty array in case of error
+        return []; // Retorne uma array vazia em caso de erro
+    }
+    }
+    async function fetchOperator() {
+    try {
+        const accessToken = localStorage.getItem('accessToken');
+
+        const response = await fetch('http://127.0.0.1:3333/users/getnames', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        });
+
+        const operators = await response.json();
+        
+
+
+        return operators; // Retorne a array para mais usos
+    } catch (error) {
+        console.error('Error fetching operator names:', error);
+        return []; // Retorne uma array vazia em caso de erro
     }
     }    
+        
     $(document).ready(async function() {
             const operators = await fetchOperatorNames()
 
@@ -453,8 +474,15 @@ input[type="time"]::-moz-calendar-picker-indicator {
                 $("#mealTimeEnd").val(end ? `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}` : "");
             });
 
-            $("#generateReport").click(function() {
+            $("#generateReport").click(async function() {
                 const operatorName = $("#operatorName").val();
+                const operatorName2 = $("#operatorName2").val();
+                const operatorNames = [operatorName, operatorName2];
+                const fullOperators = await fetchOperator();
+                const matchingOperators = fullOperators.filter(operator =>
+                    operatorNames.includes(operator.nome)
+                );
+                const operatorIds = matchingOperators.map(operator => operator.id);
                 const period = $("#period").val();
                 const date = $("#date").val();
                 const startDate = $("#startDate").val();
@@ -530,7 +558,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
 
                     // Create the payload according to backend schema
                     const data = {
-                        operador: localStorage.getItem('id'),
+                        operadores: operatorIds,
                         data_inicio: date + 'T00:00:00Z',
                         data_fim: endDate ? endDate + 'T00:00:00Z' : date + 'T00:00:00Z',  // Ensure data_fim is not empty
                         horario_rf: date + 'T' + mealTimeStart + ':00Z',  // Complete datetime format
