@@ -342,6 +342,55 @@ input[type="time"]::-moz-calendar-picker-indicator {
     }
     });
 
+    function fetchAndDisplayLastTwoPlantoes() {
+        const accessToken = localStorage.getItem('accessToken');
+        fetch('http://127.0.0.1:3333/duty/readAll', {
+            headers: {
+            Authorization: `Bearer ${accessToken}` 
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const plantoes = data.duty.duty;
+            const lastTwoPlantoes = plantoes.slice(-2);
+
+            // Formate os plantoes para mostrar
+            const formattedPlantoes = lastTwoPlantoes.map(plantao => {
+            const ocorrencias = plantao.ocorrencia || []; // trate de eventual falta de ocorrencia
+
+            // Construa a mensagem para cada plantao
+            let message = `Plantao ID: ${plantao.id}\n` +
+                `Data Inicio: ${plantao.data_inicio}\n` +
+                `Data Fim: ${plantao.data_fim}\n` +
+                `Horario RF: ${plantao.horario_rf}\n\n`;
+
+            // Adicione ocorrencia se houver
+            if (ocorrencias.length > 0) {
+                message += "Ocorrencias:\n";
+                message += ocorrencias.map(ocorrencia => {
+                return `\t- Descricao: ${ocorrencia.descricao || 'N/A'}\n` +
+                        `\t- PM Horario: ${ocorrencia.pm_horario}\n` +
+                        `\t- PM Local: ${ocorrencia.pm_local}\n` +
+                        `\t- PM Observacao: ${ocorrencia.pm_observacao || 'N/A'}\n\t- PM Acao: ${ocorrencia.pm_acao || 'N/A'}\n`;
+                }).join('');
+            } else {
+                message += "Nenhuma ocorrencia registrada.\n";
+            }
+
+            return message;
+            });
+
+            // Mostre o resultado como um alert(PLACEHOLDER)
+            alert(formattedPlantoes.join('\n\n'));
+        })
+        .catch(error => {
+            console.error('Error fetching plantoes:', error);
+        });
+        }
+
+        // Chame a função no carregamento da pagina
+        window.onload = fetchAndDisplayLastTwoPlantoes;
+
     async function fetchOperatorNames() {
     try {
         const accessToken = localStorage.getItem('accessToken');
@@ -482,7 +531,8 @@ input[type="time"]::-moz-calendar-picker-indicator {
                 const matchingOperators = fullOperators.filter(operator =>
                     operatorNames.includes(operator.nome)
                 );
-                const operatorIds = matchingOperators.map(operator => operator.id);
+                const operatorsNames = matchingOperators.map(operator => operator.nome);
+                const operatorId = localStorage.getItem("id");
                 const period = $("#period").val();
                 const date = $("#date").val();
                 const startDate = $("#startDate").val();
@@ -558,7 +608,8 @@ input[type="time"]::-moz-calendar-picker-indicator {
 
                     // Create the payload according to backend schema
                     const data = {
-                        operadores: operatorIds,
+                        operador: operatorId,
+                        operadoresNome: operatorsNames,
                         data_inicio: date + 'T00:00:00Z',
                         data_fim: endDate ? endDate + 'T00:00:00Z' : date + 'T00:00:00Z',  // Ensure data_fim is not empty
                         horario_rf: date + 'T' + mealTimeStart + ':00Z',  // Complete datetime format
