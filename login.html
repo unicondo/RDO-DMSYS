@@ -192,7 +192,6 @@ function Login() {
         return response.json();
     })
     .then(data => {
-      console.log(data)
         if (data.accessToken) {
             localStorage.clear();
             // Store the accessToken in local storage

@@ -332,7 +332,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script> 
     document.addEventListener('DOMContentLoaded', (event) => {
-    const operatorName = localStorage.getItem('nome'); // Get the nome from local storage
+    const operatorName = localStorage.getItem('nome');
     console.log(operatorName)
     if (operatorName) {
         document.getElementById('operatorName').textContent = operatorName;
@@ -475,7 +475,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
             });
 
             $("#generateReport").click(async function() {
-                const operatorName = $("#operatorName").val();
+                const operatorName = localStorage.getItem('nome')
                 const operatorName2 = $("#operatorName2").val();
                 const operatorNames = [operatorName, operatorName2];
                 const fullOperators = await fetchOperator();
