@@ -433,8 +433,9 @@ input[type="time"]::-moz-calendar-picker-indicator {
     }    
         
     $(document).ready(async function() {
+            const date = $("#date")
             const operators = await fetchOperatorNames()
-
+            
             $("#period").change(function() {
                 const period = $(this).val();
                 if (period === "Noturno") {
