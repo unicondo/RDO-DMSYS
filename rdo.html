@@ -723,18 +723,14 @@ input[type="time"]::-moz-calendar-picker-indicator {
                         const message = messageTextareas[i].value;
                         fileData.push({ file, message });
                     }
-
                     // Now you can use the fileData array to process the files and messages
-                    console.log(fileData);
-
-                    // Example: Create a FormData object and send it to the server
                     const formData = new FormData();
                     fileData.forEach(item => {
-                        formData.append('files', item.file);
-                        formData.append('messages', item.message);
+                        console.log(item)
+                    formData.append('files', item.file);
+                    formData.append('messages[]', item.message); // Use [] to indicate an array of messages
                     });
-                    console.log(formData)
-                    fetch('http://127.0.0.1:3333/writeFiles', {
+                    await fetch('http://127.0.0.1:3333/writeFiles', {
                         method: 'POST',
                         body: formData
                     })
@@ -745,6 +741,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     .catch((error) => {
                         console.error('Error uploading files:', error);
                     });
+
                     // Send data to backend
                     await fetch('http://127.0.0.1:3333/duty', {
                         method: 'POST',
