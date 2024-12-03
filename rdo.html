@@ -204,6 +204,24 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 input[type="time"]::-moz-calendar-picker-indicator {
     color: white; /* Ajuste a cor conforme necessário */
 }
+.popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+}
+
+
+.popup.show {
+  display: block;
+}
     </style>
 
 </head>
@@ -293,6 +311,51 @@ input[type="time"]::-moz-calendar-picker-indicator {
                                 </tr>
                             </tbody>
                         </table>
+                        <div>
+                            <button id="addFileButton" type="button">Adicionar arquivo</button>
+                            <div id="popup" class="popup"></div>
+                            <script>
+                            const addFileButton = document.getElementById('addFileButton');
+                            const popup = document.getElementById('popup');
+
+                            addFileButton.addEventListener('click', () => {
+                                popup.classList.add('show');
+
+                                const initialContainer = document.createElement('div');
+                                initialContainer.classList.add('file-input-container');
+                                initialContainer.innerHTML = `
+                                    <input type="file">
+                                    <textarea placeholder="Adicione a descrição para este arquivo"></textarea>
+                                `;
+
+                                const addAnotherFileButton = document.createElement('button');
+                                addAnotherFileButton.type = "button";
+                                addAnotherFileButton.textContent = 'Adicionar outro arquivo';
+
+                                const closePopupButton = document.createElement('button');
+                                closePopupButton.type = "button";
+                                closePopupButton.textContent = 'Fechar';
+
+                                popup.appendChild(initialContainer);
+                                popup.appendChild(addAnotherFileButton);
+                                popup.appendChild(closePopupButton);
+
+                                addAnotherFileButton.addEventListener('click', () => {
+                                    const newContainer = document.createElement('div');
+                                    newContainer.classList.add('file-input-container');
+                                    newContainer.innerHTML = `
+                                        <input type="file">
+                                        <textarea placeholder="Adicione a descrição para este arquivo"></textarea>
+                                    `;
+                                    popup.insertBefore(newContainer, addAnotherFileButton);
+                                });
+
+                                closePopupButton.addEventListener('click', () => {
+                                    popup.classList.remove('show');
+                                });
+                            });
+                        </script>
+                        </div>                    
                         <div class="btn-container">
                             <button type="button" class="btn btn-primary" id="addRow"><i class="fa-solid fa-plus"></i> Linhas</button>
                             <button type="button" class="btn btn-success" id="generateReport"><i class="fa-solid fa-chart-pie"></i>   Relatório</button>
@@ -300,6 +363,8 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     </div>
                 </div>
             </form>
+
+
         </div>
         
         <div id="report" class="my-3 p-3 bg-white rounded shadow-sm">
@@ -324,16 +389,17 @@ input[type="time"]::-moz-calendar-picker-indicator {
             </table>
             <p id="noRondaMessage" class="text-center" style="display: none;">Não houve ronda neste dia.</p>
         </div>
+        
 <div class="align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">Em desenvolvimento por: <a href="https://unicondo.app">Bruno Ferreira Alves</a></div>
     </main>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script> 
+    <script>
     document.addEventListener('DOMContentLoaded', (event) => {
     const operatorName = localStorage.getItem('nome');
-    console.log(operatorName)
+    
     if (operatorName) {
         document.getElementById('operatorName').textContent = operatorName;
     } else {
@@ -341,7 +407,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
         console.error('Nome not found in local storage');
     }
     });
-
+    
     function fetchAndDisplayLastTwoPlantoes() {
         const accessToken = localStorage.getItem('accessToken');
         fetch('http://127.0.0.1:3333/duty/readAll', {
@@ -606,22 +672,81 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     }
 
                     $("#report").show();
+                    const ocurrence = policeReports.map((report, index) => ({
+                        ocorrencia_desc: '',
+                        ocorrencia_pm_horario: report.time,
+                        ocorrencia_pm_local: report.location,
+                        ocorrencia_pm_observacao: report.observation,
+                        ocorrencia_pm_acao: ''
+                    }))
 
-                    // Create the payload according to backend schema
                     const data = {
                         operador: operatorId,
                         operadoresNome: operatorsNames,
                         data_inicio: date + 'T00:00:00Z',
                         data_fim: endDate ? endDate + 'T00:00:00Z' : date + 'T00:00:00Z',  // Ensure data_fim is not empty
                         horario_rf: date + 'T' + mealTimeStart + ':00Z',  // Complete datetime format
-                        ocorrencia_desc: '',
-                        ocorrencia_pm_horario: policeReports.length > 0 ? policeReports[0].time : date + 'T00:00:00Z',  // Complete datetime format
-                        ocorrencia_pm_local: policeReports.length > 0 ? policeReports[0].location : '',
-                        ocorrencia_pm_observacao: policeReports.length > 0 ? policeReports[0].observation : '',
-                        ocorrencia_pm_acao: ''
+                        contrato: "Union",
+                        ocurrence: ocurrence,
+                        ocurrencetest: ocurrence
+                        
                     };
+                    //const files = document.getElementById('fileInput').files;
+                    //if (files) {   
+                    //    const formData = new FormData();
+                    //    for (let i = 0; i < files.length; i++) {
+                    //    formData.append('files', files[i]);
+                    //    }
+                    //    await fetch('http://127.0.0.1:3333/writeFiles', {
+                    //    method: 'POST',
+                    //    body: formData
+                    //    })
+                    //    .then(response => response.json())
+                    //    .then(responseData => {
+                    //    console.log('Files uploaded successfully:', responseData);
+                    //    })
+                    //    .catch((error) => {
+                    //    console.error('Error uploading files:', error);
+                    //    });
+                    //} else {
+                    //    console.log("No files selected");
+                    //}
+                    const fileInputs = popup.querySelectorAll('input[type="file"]');
+                    const messageTextareas = popup.querySelectorAll('textarea');
+
+                    // Create an array to store file and message pairs
+                    const fileData = [];
+
+                    // Iterate over each file input and its corresponding message textarea
+                    for (let i = 0; i < fileInputs.length; i++) {
+                        const file = fileInputs[i].files[0];
+                        const message = messageTextareas[i].value;
+                        fileData.push({ file, message });
+                    }
+
+                    // Now you can use the fileData array to process the files and messages
+                    console.log(fileData);
+
+                    // Example: Create a FormData object and send it to the server
+                    const formData = new FormData();
+                    fileData.forEach(item => {
+                        formData.append('files', item.file);
+                        formData.append('messages', item.message);
+                    });
+                    console.log(formData)
+                    fetch('http://127.0.0.1:3333/writeFiles', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(responseData => {
+                        console.log('Files uploaded successfully:', responseData);
+                    })
+                    .catch((error) => {
+                        console.error('Error uploading files:', error);
+                    });
                     // Send data to backend
-                    fetch('http://127.0.0.1:3333/duty', {
+                    await fetch('http://127.0.0.1:3333/duty', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -635,12 +760,14 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     .catch((error) => {
                         console.error('Error:', error);
                     });
+                    
+                    
                 }
             });
 
         });
         
         </script>
-   
+ 
 </body>
 </html>
