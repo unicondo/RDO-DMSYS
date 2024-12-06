@@ -218,15 +218,38 @@ input[type="time"]::-moz-calendar-picker-indicator {
   z-index: 3;
 }
 
-
+#plantaoContent {
+    white-space: pre-line; /* Permite quebras de linha, mas mantém espaços em branco */
+}
 .popup.show {
   display: block;
 }
-    </style>
+.consideracaofinal {
+    display: block;
+    width: 100%;
+    height: 10rem;
+    resize: none;
+}
+</style>
 
 </head>
 <body style="background-color: #111818">
-    
+    <div class="modal fade" id="plantaoModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="plantaoModalLabel"aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="plantaoModalLabel">Últimos Dois Plantões</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+              <div id="plantaoContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="dismissbutton" data-bs-dismiss="modal" disabled>Ciente</button>
+            </div>
+          </div>
+        </div>
+      </div>
     <div class="overlay"></div>
     <main role="main" class="container">
         <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
@@ -238,6 +261,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
         </div>
 
         <div class="align-items-center p-3 my-3 text-white-50 bg-purple rounded shadow-sm">
+            
             <form id="reportForm">
                 <div class="form-row">
                     <div class="form-group">
@@ -249,6 +273,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
                         <select class="form-control" id="operatorName2">
                             <option value="">Selecione...</option>
                         </select>
+                        <label for="contract">Contrato</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -311,6 +336,11 @@ input[type="time"]::-moz-calendar-picker-indicator {
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="form-group">
+                        <label for="policeReport">CONSIDERAÇÕES FINAIS</label>
+                        </div>
+                        <br>
+                        <textarea required class="consideracaofinal" placeholder="Consideração final"></textarea>
                         <div>
                             <button id="addFileButton" type="button">Adicionar arquivo</button>
                             <div id="popup" class="popup"></div>
@@ -408,74 +438,105 @@ input[type="time"]::-moz-calendar-picker-indicator {
     }
     });
     
+    //Leia os ultimos dois plantoes e mostre eles como um popup formatado
     function fetchAndDisplayLastTwoPlantoes() {
-        const accessToken = localStorage.getItem('accessToken');
-        fetch('http://127.0.0.1:3333/duty/readAll', {
-            headers: {
-            Authorization: `Bearer ${accessToken}` 
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const plantoes = data.duty.duty;
-            const lastTwoPlantoes = plantoes.slice(-2);
+  const accessToken = localStorage.getItem('accessToken');
+  fetch('http://127.0.0.1:3333/duty/readAll', {
+    headers: {
+      Authorization: `Bearer ${accessToken}`
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    const plantoes = data.duty.duty;
+    const lastTwoPlantoes = plantoes.slice(-2);
 
-            // Formate os plantoes para mostrar
-            const formattedPlantoes = lastTwoPlantoes.map(plantao => {
-            const ocorrencias = plantao.ocorrencia || []; // trate de eventual falta de ocorrencia
+    // Format the plantoes for display
+    const formattedPlantoes = lastTwoPlantoes.map(plantao => {
+      const ocorrencias = plantao.ocorrencia || [];
+      console.log(plantao)
+      console.log(ocorrencias)
+      // Build the message
+      let message = `Plantao de: ${plantao.operadoresNome}\n\n`;
 
-            // Construa a mensagem para cada plantao
-            let message = `Plantao ID: ${plantao.id}\n` +
-                `Data Inicio: ${plantao.data_inicio}\n` +
-                `Data Fim: ${plantao.data_fim}\n` +
-                `Horario RF: ${plantao.horario_rf}\n\n`;
+      // Format dates with only date part
+      message += `Data Inicio: ${new Date(plantao.data_inicio).toLocaleDateString()}\n`;
+      message += `Data Fim: ${new Date(plantao.data_fim).toLocaleDateString()}\n`;
 
-            // Adicione ocorrencia se houver
-            if (ocorrencias.length > 0) {
-                message += "Ocorrencias:\n";
-                message += ocorrencias.map(ocorrencia => {
-                return `\t- Descricao: ${ocorrencia.descricao || 'N/A'}\n` +
-                        `\t- PM Horario: ${ocorrencia.pm_horario}\n` +
-                        `\t- PM Local: ${ocorrencia.pm_local}\n` +
-                        `\t- PM Observacao: ${ocorrencia.pm_observacao || 'N/A'}\n\t- PM Acao: ${ocorrencia.pm_acao || 'N/A'}\n`;
-                }).join('');
-            } else {
-                message += "Nenhuma ocorrencia registrada.\n";
-            }
-
-            return message;
-            });
-
-            // Mostre o resultado como um alert(PLACEHOLDER)
-            alert(formattedPlantoes.join('\n\n'));
-        })
-        .catch(error => {
-            console.error('Error fetching plantoes:', error);
-        });
+      // Extract only hour for PM Horario and HorarioRF
+      const pmHorario = new Date(ocorrencias.pm_horario)
+      const horarioRF = new Date(plantao.horario_rf)
+      const formattedHorarioRF = horarioRF.toLocaleString('pt-BR', { hour: 'numeric', minute: 'numeric' });
+      const formattedPmHorario = pmHorario.toLocaleString('pt-BR', { hour: 'numeric', minute: 'numeric' });
+    
+    message += `Horario RF: ${formattedHorarioRF}\n\n`;
+      // Add occurrences if available
+      if (ocorrencias.length > 0) {
+        message += "Ocorrencias:\n";
+        message += ocorrencias.map(ocorrencia => {
+          return `\t- Descricao: ${ocorrencia.descricao || 'N/A'}\n` +
+                 `\t- Horario: ${formattedPmHorario}\n` +
+                 `\t- Local: ${ocorrencia.pm_local}\n` +
+                 `\t- Observacao: ${ocorrencia.pm_observacao || 'N/A'}\n` +
+                 `\t- Acao: ${ocorrencia.pm_acao || 'N/A'}\n`;
+        }).join('');
+        } else {
+            message += "Nenhuma ocorrencia registrada.\n";
         }
 
-        // Chame a função no carregamento da pagina
-        window.onload = fetchAndDisplayLastTwoPlantoes;
-
-    async function fetchOperatorNames() {
-    try {
-        const accessToken = localStorage.getItem('accessToken');
-
-        const response = await fetch('http://127.0.0.1:3333/users/getnames', {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-            }
+        return message;
         });
 
-        const data = await response.json();
-        const operators = data.map(user => user.nome); // Extraia apenas a propriedade "nome"
+        // Show the modal
+        $('#plantaoModal').modal('show');
 
+        // Populate the modal content
+        $('#plantaoContent').html(formattedPlantoes.join('<br>'));
+        $('#plantaoModal').on('shown.bs.modal', () => {
+        const modalBody = $('#plantaoContent');
+        const dismissButton = $('#dismissbutton');
 
-        return operators; // Retorne a array para mais usos
-    } catch (error) {
-        console.error('Error fetching operator names:', error);
-        return []; // Retorne uma array vazia em caso de erro
+        modalBody.scroll(() => {
+            if (modalBody[0].scrollHeight - modalBody.scrollTop() === modalBody.outerHeight()) {
+            dismissButton.prop('disabled', false);
+            } else {
+            dismissButton.prop('disabled', true);
+            }
+        });
+        });
+        // Add dismiss button functionality
+        const dismissButton = document.getElementById('dismissbutton');
+        dismissButton.addEventListener('click', () => {
+        $('#plantaoModal').modal('hide');
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching plantoes:', error);
+    });
     }
+        // Chame a função no carregamendo da pagina
+        window.onload = fetchAndDisplayLastTwoPlantoes;
+        
+        //Alimente a lista de operadores com dados do backend
+        async function fetchOperatorNames() {
+        try {
+            const accessToken = localStorage.getItem('accessToken');
+
+            const response = await fetch('http://127.0.0.1:3333/users/getnames', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            });
+
+            const data = await response.json();
+            const operators = data.map(user => user.nome); // Extraia apenas a propriedade "nome"
+
+
+            return operators; // Retorne a array para mais usos
+        } catch (error) {
+            console.error('Error fetching operator names:', error);
+            return []; // Retorne uma array vazia em caso de erro
+        }
     }
     async function fetchOperator() {
     try {
@@ -497,7 +558,8 @@ input[type="time"]::-moz-calendar-picker-indicator {
         return []; // Retorne uma array vazia em caso de erro
     }
     }    
-        
+    
+
     $(document).ready(async function() {
             const date = $("#date")
             const operators = await fetchOperatorNames()
@@ -714,34 +776,56 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     const fileInputs = popup.querySelectorAll('input[type="file"]');
                     const messageTextareas = popup.querySelectorAll('textarea');
 
-                    // Create an array to store file and message pairs
                     const fileData = [];
+                    const descriptions = [];
 
                     // Iterate over each file input and its corresponding message textarea
                     for (let i = 0; i < fileInputs.length; i++) {
-                        const file = fileInputs[i].files[0];
-                        const message = messageTextareas[i].value;
-                        fileData.push({ file, message });
+                    const file = fileInputs[i].files[0];
+                    const message = messageTextareas[i].value;
+                    fileData.push(file);
+                    descriptions.push(message);
                     }
-                    // Now you can use the fileData array to process the files and messages
+
+                    // Create FormData for files
                     const formData = new FormData();
-                    fileData.forEach(item => {
-                        console.log(item)
-                    formData.append('files', item.file);
-                    formData.append('messages[]', item.message); // Use [] to indicate an array of messages
-                    });
-                    await fetch('http://127.0.0.1:3333/writeFiles', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(responseData => {
-                        console.log('Files uploaded successfully:', responseData);
-                    })
-                    .catch((error) => {
-                        console.error('Error uploading files:', error);
+                    fileData.forEach(file => {
+                    formData.append('files', file);
                     });
 
+                    // Send the files request
+                    fetch('http://127.0.0.1:3333/writeFiles', {
+                    method: 'POST',
+                    body: formData
+                    })
+                    .then(response => {
+                    if (response.ok) {
+                        console.log('Files uploaded successfully');
+                        // Send the descriptions request
+                        fetch('http://127.0.0.1:3333/writeDescriptions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ descriptions })
+                        })
+                        .then(response => {
+                        if (response.ok) {
+                            console.log('Descriptions written successfully');
+                        } else {
+                            console.error('Error writing descriptions');
+                        }
+                        })
+                        .catch(error => {
+                        console.error('Error:', error);
+                        });
+                    } else {
+                        console.error('Error uploading files');
+                    }
+                    })
+                    .catch(error => {
+                    console.error('Error:', error);
+                    });
                     // Send data to backend
                     await fetch('http://127.0.0.1:3333/duty', {
                         method: 'POST',
@@ -758,11 +842,9 @@ input[type="time"]::-moz-calendar-picker-indicator {
                         console.error('Error:', error);
                     });
                     
-                    
                 }
-            });
-
-        });
+                })
+            });;
         
         </script>
  
