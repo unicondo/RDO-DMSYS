@@ -336,11 +336,15 @@ input[type="time"]::-moz-calendar-picker-indicator {
                                 </tr>
                             </tbody>
                         </table>
+                        <br>
+                        <div class="btn-container">
+                            <button type="button" class="btn btn-primary" id="addRow"><i class="fa-solid fa-plus"></i> Linhas</button>
+                            <button type="button" class="btn btn-success" id="generateReport"><i class="fa-solid fa-chart-pie"></i>   Relatório</button>
+                        </div>
                         <div class="form-group">
                         <label for="policeReport">CONSIDERAÇÕES FINAIS</label>
                         </div>
-                        <br>
-                        <textarea required class="consideracaofinal" placeholder="Consideração final"></textarea>
+                        <textarea id="consideracaofinal" class="consideracaofinal" placeholder="Consideração final"></textarea>
                         <div>
                             <button id="addFileButton" type="button">Adicionar arquivo</button>
                             <div id="popup" class="popup"></div>
@@ -386,10 +390,6 @@ input[type="time"]::-moz-calendar-picker-indicator {
                             });
                         </script>
                         </div>                    
-                        <div class="btn-container">
-                            <button type="button" class="btn btn-primary" id="addRow"><i class="fa-solid fa-plus"></i> Linhas</button>
-                            <button type="button" class="btn btn-success" id="generateReport"><i class="fa-solid fa-chart-pie"></i>   Relatório</button>
-                        </div>
                     </div>
                 </div>
             </form>
@@ -653,6 +653,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
             });
 
             $("#generateReport").click(async function() {
+                const consideracoeselement = document.getElementById('consideracaofinal')
                 const operatorName = localStorage.getItem('nome')
                 const operatorName2 = $("#operatorName2").val();
                 const operatorNames = [operatorName, operatorName2];
@@ -670,7 +671,6 @@ input[type="time"]::-moz-calendar-picker-indicator {
                 const mealTimeEnd = $("#mealTimeEnd").val();
                 const policeReports = [];
                 let valid = true;
-
                 console.log(operatorName, period, date, startDate, endDate, mealTimeStart, mealTimeEnd, policeReports);
 
                 if (period === "Noturno" && !startDate) {
@@ -744,6 +744,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
 
                     const data = {
                         operador: operatorId,
+                        consideracoes: consideracoeselement.value,
                         operadoresNome: operatorsNames,
                         data_inicio: date + 'T00:00:00Z',
                         data_fim: endDate ? endDate + 'T00:00:00Z' : date + 'T00:00:00Z',  // Ensure data_fim is not empty
