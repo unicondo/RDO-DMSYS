@@ -454,8 +454,6 @@ input[type="time"]::-moz-calendar-picker-indicator {
     // Format the plantoes for display
     const formattedPlantoes = lastTwoPlantoes.map(plantao => {
       const ocorrencias = plantao.ocorrencia || [];
-      console.log(plantao)
-      console.log(ocorrencias)
       // Build the message
       let message = `Plantao de: ${plantao.operadoresNome}\n\n`;
 
@@ -671,7 +669,6 @@ input[type="time"]::-moz-calendar-picker-indicator {
                 const mealTimeEnd = $("#mealTimeEnd").val();
                 const policeReports = [];
                 let valid = true;
-                console.log(operatorName, period, date, startDate, endDate, mealTimeStart, mealTimeEnd, policeReports);
 
                 if (period === "Noturno" && !startDate) {
                     alert("Por favor, preencha a data de início.");
@@ -754,26 +751,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
                         ocurrencetest: ocurrence
                         
                     };
-                    //const files = document.getElementById('fileInput').files;
-                    //if (files) {   
-                    //    const formData = new FormData();
-                    //    for (let i = 0; i < files.length; i++) {
-                    //    formData.append('files', files[i]);
-                    //    }
-                    //    await fetch('http://127.0.0.1:3333/writeFiles', {
-                    //    method: 'POST',
-                    //    body: formData
-                    //    })
-                    //    .then(response => response.json())
-                    //    .then(responseData => {
-                    //    console.log('Files uploaded successfully:', responseData);
-                    //    })
-                    //    .catch((error) => {
-                    //    console.error('Error uploading files:', error);
-                    //    });
-                    //} else {
-                    //    console.log("No files selected");
-                    //}
+                    
                     const fileInputs = popup.querySelectorAll('input[type="file"]');
                     const messageTextareas = popup.querySelectorAll('textarea');
 
@@ -801,7 +779,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     })
                     .then(response => {
                     if (response.ok) {
-                        console.log('Files uploaded successfully');
+                    
                         // Send the descriptions request
                         fetch('http://127.0.0.1:3333/writeDescriptions', {
                         method: 'POST',
@@ -809,13 +787,6 @@ input[type="time"]::-moz-calendar-picker-indicator {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({ descriptions })
-                        })
-                        .then(response => {
-                        if (response.ok) {
-                            console.log('Descriptions written successfully');
-                        } else {
-                            console.error('Error writing descriptions');
-                        }
                         })
                         .catch(error => {
                         console.error('Error:', error);
@@ -837,7 +808,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     })
                     .then(response => response.json())
                     .then(responseData => {
-                        console.log('Success:', responseData);
+                        console.log('Success');
                     })
                     .catch((error) => {
                         console.error('Error:', error);
