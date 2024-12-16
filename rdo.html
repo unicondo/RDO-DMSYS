@@ -441,7 +441,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
     //Leia os ultimos dois plantoes e mostre eles como um popup formatado
     function fetchAndDisplayLastTwoPlantoes() {
   const accessToken = localStorage.getItem('accessToken');
-  fetch('http://127.0.0.1:3333/duty/readAll', {
+  fetch('http://192.168.10.246:3333/duty/readAll', {
     headers: {
       Authorization: `Bearer ${accessToken}`
     }
@@ -520,7 +520,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
         try {
             const accessToken = localStorage.getItem('accessToken');
 
-            const response = await fetch('http://127.0.0.1:3333/users/getnames', {
+            const response = await fetch('http://192.168.10.246:3333/users/getnames', {
                 headers: {
                     Authorization: `Bearer ${accessToken}`
                 }
@@ -540,7 +540,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
     try {
         const accessToken = localStorage.getItem('accessToken');
 
-        const response = await fetch('http://127.0.0.1:3333/users/getnames', {
+        const response = await fetch('http://192.168.10.246:3333/users/getnames', {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -773,7 +773,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     });
 
                     // Send the files request
-                    fetch('http://127.0.0.1:3333/writeFiles', {
+                    fetch('http://192.168.10.246:3333/writeFiles', {
                     method: 'POST',
                     body: formData
                     })
@@ -781,7 +781,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     if (response.ok) {
                     
                         // Send the descriptions request
-                        fetch('http://127.0.0.1:3333/writeDescriptions', {
+                        fetch('http://192.168.10.246:3333/writeDescriptions', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -799,7 +799,7 @@ input[type="time"]::-moz-calendar-picker-indicator {
                     console.error('Error:', error);
                     });
                     // Send data to backend
-                    await fetch('http://127.0.0.1:3333/duty', {
+                    await fetch('http://192.168.10.246:3333/duty', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
